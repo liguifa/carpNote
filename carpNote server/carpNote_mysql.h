@@ -24,10 +24,10 @@ bool modifyUserPW(string UserName,string newUserPW);
 string getUserIDByUserName(string UserName);
 bool addBook(string UserName,string bookName);
 bool modifyBookName(string UserName, string BookName,string newBookName);
-string getBookIDByBookName(string BookName);
+string getBookIDByBookName(string UserName,string BookName);
 bool addNote(string UserName,string BookName,string NoteName);
 bool modifyNoteName(string UserName,string BookName,string NoteName,string newNoteName);
-string checkUser(string UserName,string UserPW);
+bool checkUser(string UserName,string UserPW);
 vector<string> getUserBook(string UserName);
 vector<string> getBookNoteName(string UserName,string BookName);
 
