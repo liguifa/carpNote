@@ -14,7 +14,7 @@
 #include "encapsulation_mysql.h"
 
 using namespace std;
-using namespace EncapMysql;
+//using namespace EncapMysql;
 
 CEncapMysql::CEncapMysql() {
 	SetConnected(false);

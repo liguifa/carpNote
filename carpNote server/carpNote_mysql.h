@@ -8,16 +8,18 @@
 #ifndef _CARPNOTE_MYSQL_H
 #define _CARPNOTE_MYSQL_H
 
-#include<encapsulation_mysql.h>
-#include<iosstream>
+#include"encapsulation_mysql.h"
+#include<iostream>
 #include<vector>
 #include<string>
 
 using namespace std;
+//using namespace EncapMysql;
+
 
 class carpNoteSQL{
 public:
-void carpNoteSQL();
+    carpNoteSQL();
 bool addUser(string UserName,string UserPW);
 bool modifyUserName(string UserName,string newUserName);
 bool modifyUserPW(string UserName,string newUserPW);
@@ -32,7 +34,7 @@ vector<string> getUserBook(string UserName);
 vector<string> getBookNoteName(string UserName,string BookName);
 
 private:
-CEncapMysql* SQLCon;
+CEncapMysql *SQLCon;
 
 };
 
