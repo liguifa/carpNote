@@ -23,7 +23,7 @@ using namespace std;
 
 #define ERRMSG1(fmt,...)  ; sprintf(m_szErrMsg, fmt, __VA_ARGS__);
 #define ERRMSG2(fmt,args...)  ; sprintf(m_szErrMsg, "[%s 第 %d 行 ]; "fmt"\r\n" , __FILE__, __LINE__, ##args);
-//namespace EncapMysql {
+namespace EncapMysql {
 
 class CEncapMysql {
 	typedef map<string, int> MapFieldNameIndex;
@@ -84,6 +84,6 @@ private:
 	string m_sUser; //用户名
 	string m_sPassword; //口令
 };
-//} //end of namespace  EncapMysql
+} //end of namespace  EncapMysql
 
-#endif /* ENCAPSULATION_MYSQL_H_*/ 
+#endif /* ENCAPSULATION_MYSQL_H_ */

@@ -26,7 +26,7 @@ bool carpNoteSQL::checkUser(string UserName,string UserPW)
 //Ìí¼ÓÕË»§
 bool carpNoteSQL::addUser(string UserName,string UserPW)
 {
-	string sql="insert into CarpNote.tb_user(UserName,UserPw) values('"+UserName+"','"+UserPW+"')";
+	string sql="insert into CarpNote.tb_user(UserName,UserPW) values('"+UserName+"','"+UserPW+"')";
 	const char* charSQL=sql.c_str();
 	SQLCon->ModifyQuery(charSQL);
 

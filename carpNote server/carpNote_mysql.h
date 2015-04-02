@@ -14,7 +14,7 @@
 #include<string>
 
 using namespace std;
-//using namespace EncapMysql;
+using  EncapMysql::CEncapMysql;
 
 
 class carpNoteSQL{
