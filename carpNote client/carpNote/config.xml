@@ -3,17 +3,10 @@
   <UserID></UserID>
   <UserPW></UserPW>
 
-  <UserBook>
-    <book>
-      <note></note>
-    </book>
-  </UserBook>
-
   <lastUseBook></lastUseBook>
   <lastUseNote></lastUseNote>
 
   <Setting>
-    
   </Setting>
     
   

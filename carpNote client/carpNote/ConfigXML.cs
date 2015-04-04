@@ -50,14 +50,14 @@ namespace carpNote
             return true;
         }
 
-        //得到最后看的书
+        //得到最后看的笔记本
         public string getLastUseBook()
         {
             XmlNode lastUseBook = root.SelectSingleNode("lastUseBook");
             return lastUseBook.InnerText;
         }
 
-        //设置最后看的书
+        //设置最后看的笔记本
         public bool SetLastUseBook(string UseBook)
         {
             XmlNode lastUseBook = root.SelectSingleNode("lastUseBook");
@@ -66,12 +66,14 @@ namespace carpNote
             return true;
         }
 
+        //设置最后使用的笔记
         public string getLastUseNote()
         {
             XmlNode lastUseNote = root.SelectSingleNode("lastUseNote");
             return lastUseNote.InnerText;
         }
 
+        //设置最后使用的笔记
         public bool SetLastUseNote(string UseNote)
         {
             XmlNode lastUseNote = root.SelectSingleNode("lastUseNote");

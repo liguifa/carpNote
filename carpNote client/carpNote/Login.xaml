@@ -5,8 +5,8 @@
     <Grid>
         <Label Content="账号" Height="28" HorizontalAlignment="Left" Margin="133,56,0,0" Name="label1" VerticalAlignment="Top" />
         <Label Content="密码" Height="28" HorizontalAlignment="Left" Margin="133,108,0,0" Name="label2" VerticalAlignment="Top" />
-        <Button Content="确认" Height="23" HorizontalAlignment="Left" Margin="118,194,0,0" Name="button1" VerticalAlignment="Top" Width="75" />
-        <Button Content="取消" Height="23" HorizontalAlignment="Left" Margin="268,193,0,0" Name="but_Close" VerticalAlignment="Top" Width="75" Click="but_Close_Click" />
+        <Button Content="注册" Height="23" HorizontalAlignment="Left" Margin="118,194,0,0" Name="button1" VerticalAlignment="Top" Width="75" Click="button1_Click" />
+        <Button Content="修改" Height="23" HorizontalAlignment="Left" Margin="268,193,0,0" Name="but_Close" VerticalAlignment="Top" Width="75" Click="but_Close_Click" />
         <TextBox Height="23" HorizontalAlignment="Left" Margin="194,58,0,0" Name="textBox1" VerticalAlignment="Top" Width="120" />
         <PasswordBox Height="23" HorizontalAlignment="Left" Margin="194,108,0,0" Name="passwordBox1" VerticalAlignment="Top" Width="120" />
         <Image Height="63" HorizontalAlignment="Left" Margin="12,12,0,0" Name="image1" Stretch="Fill" VerticalAlignment="Top" Width="66" Source="/carpNote;component/images/boolf.png" />
