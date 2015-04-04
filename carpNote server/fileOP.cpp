@@ -11,6 +11,8 @@
 #include<iostream>
 #include<sys/types.h>
 #include<fcntl.h>
+#include<string>
+#include<stdio.h>
 using namespace std;
 
 fileOP::fileOP()
@@ -20,34 +22,53 @@ fileOP::fileOP()
 
 bool fileOP::setRootDir()
 {
-    mkdir(userRootDir,S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+    const char * dir=userRootDir.c_str();
+    
+    mkdir(dir,S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     return true;
 }
 
 bool fileOP::setUserDir(string UserName)
 {
-    mkdir(userRootDir+"/"+UserName,S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	string dirStr=userRootDir+"/"+UserName;
+	const char* dir=dirStr.c_str();
+
+
+    mkdir(dir,S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 
     return true;
 }
 
 bool fileOP::modifyUserDirName(string UserName,string newUserName)
 {
-    rename(userRootDir+"/"+UserName,useRootDir+"/"+newUserName);
+	string strOrName=userRootDir+"/"+UserName;
+	string strNewName=userRootDir+"/"+newUserName;
+	const char* orName=strOrName.c_str();
+	const char* newName=strNewName.c_str();
+
+    rename(orName,newName);
     
     return true;
 }
 
-bool setBookDir(string UserName,string bookName)
+bool fileOP::setBookDir(string UserName,string bookName)
 {
-    mkdir(userRootDir+"/"+UserName+"/"+bookName,S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	string dirStr=userRootDir+"/"+UserName+"/"+bookName;
+	const char* dir=dirStr.c_str();
+
+    mkdir(dir,S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     
     return true;
 }
 
 bool fileOP::modifyBookDirName(string UserName,string BookName,string newBookName)
 {
-    rename(userRootDir+"/"+UserName+"BookName",userRootDir+"/"+UserName+"/"+newBookName);
+	string strOrName=userRootDir+"/"+UserName+"/"+BookName;
+	string strNewName=userRootDir+"/"+UserName+"/"+newBookName;
+	const char* orName=strOrName.c_str();
+	const char* newName=strNewName.c_str();
+
+    rename(orName,newName);
     
     return true;
 }
@@ -56,7 +77,9 @@ bool fileOP::modifyBookDirName(string UserName,string BookName,string newBookNam
 bool fileOP::setNoteFile(string UserName,string BookName,string noteName)
 {
     int fd;
-    fd=open(userRootDir+"/"+BookName+"/"+noteName,O_RDWR|O_CREAT);
+	string fileStr=userRootDir+"/"+UserName+"/"+BookName+"/"+noteName;
+	const char* file=fileStr.c_str();
+    fd=open(file,O_RDWR|O_CREAT);
     close(fd);
     
     return true;
@@ -64,7 +87,13 @@ bool fileOP::setNoteFile(string UserName,string BookName,string noteName)
 
 bool fileOP::modifyNoteFileName(string UserName,string BookName,string NoteName,string newNoteName)
 {
-    rename(userRootDir+"/"+UserName+"/"+BookName+"/"+NoteName,userRootDir+"/"+BookName+"/"+newNoteName);
+	string strOrName=userRootDir+"/"+UserName+"/"+BookName+"/"+NoteName;
+	string strNewName=userRootDir+"/"+UserName+"/"+BookName+"/"+newNoteName;
+	const char* orName=strOrName.c_str();
+	const char* newName=strNewName.c_str();
+
+
+    rename(orName,newName);
     
     return true;
 }
@@ -72,7 +101,9 @@ bool fileOP::modifyNoteFileName(string UserName,string BookName,string NoteName,
 bool fileOP::writeToNoteFile(string UserName,string BookName,string NoteName,char *fileCache)
 {
     int fd;
-    fd=open(userRootDir+"/"+UserName+"/"+BookName+"/"+NoteName,O_RDWR);
+	string fileStr=userRootDir+"/"+UserName+"/"+BookName+"/"+NoteName;
+	const char* file=fileStr.c_str();
+    fd=open(file,O_RDWR);
     write(fd,fileCache,sizeof(fileCache));
     
     close(fd);
@@ -83,7 +114,9 @@ char* fileOP::readForNoteFile(string UserName,string BookName,string NoteName)
 {
     int fd,size;
     char buffer[3000];
-    fd=open(userRootDir+"/"+UserName+"/"+BookName+"/"+NoteName,O_RDWR);
+	string fileStr=userRootDir+"/"+UserName+"/"+BookName+"/"+NoteName;
+	const char* file=fileStr.c_str();
+    fd=open(file,O_RDWR);
     size=read(fd,buffer,sizeof(buffer));
     
     return buffer;
