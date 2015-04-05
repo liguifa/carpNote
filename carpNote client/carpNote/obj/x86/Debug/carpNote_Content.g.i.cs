@@ -8,6 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("config.xml")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("images/login.png")]
 
 

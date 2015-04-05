@@ -18,3 +18,7 @@ E:\testCode\carpNote\carpNote\obj\x86\Debug\Login.baml
 E:\testCode\carpNote\carpNote\obj\x86\Debug\Setting.baml
 E:\testCode\carpNote\carpNote\obj\x86\Debug\Login.g.cs
 E:\testCode\carpNote\carpNote\obj\x86\Debug\Setting.g.cs
+E:\testCode\carpNote\carpNote\obj\x86\Debug\CreateBook.baml
+E:\testCode\carpNote\carpNote\obj\x86\Debug\CreateBook.g.cs
+E:\testCode\carpNote\carpNote\obj\x86\Debug\createNote.baml
+E:\testCode\carpNote\carpNote\obj\x86\Debug\createNote.g.cs

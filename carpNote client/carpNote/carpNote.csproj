@@ -65,11 +65,25 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ConfigXML.cs" />
+    <Compile Include="CreateBook.xaml.cs">
+      <DependentUpon>CreateBook.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="createNote.xaml.cs">
+      <DependentUpon>createNote.xaml</DependentUpon>
+    </Compile>
     <Compile Include="fileOP.cs" />
     <Compile Include="netOP.cs" />
     <Compile Include="Setting.xaml.cs">
       <DependentUpon>Setting.xaml</DependentUpon>
     </Compile>
+    <Page Include="CreateBook.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="createNote.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Login.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -125,6 +139,9 @@
     <Resource Include="config.xml">
       <SubType>Designer</SubType>
     </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\login.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

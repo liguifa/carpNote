@@ -20,17 +20,18 @@ namespace carpNote
         //注册用户，并返回注册结果
         public string  regissterUser(string UserName,string UserPW)
         {
-            string msg = UserName + UserPW + "regi";
+            string msg = UserName +UserPW + "regi";
 
             clientSocket.Send(Encoding.ASCII.GetBytes(msg));
             
             byte[] data = new byte[1024];
 
             int recv = clientSocket.Receive(data);
-            string stringdata = Encoding.ASCII.GetString(data, 0, recv);
+
+            string tringdata = data.ToString();
 
 
-            return stringdata;
+            return tringdata;
         }
 
         //修改账户信息
