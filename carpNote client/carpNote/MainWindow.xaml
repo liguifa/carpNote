@@ -21,7 +21,7 @@
         </GroupBox>
         <GroupBox Header="笔记" Name="gb_note" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Margin="218,62,0,0" Height="557">
             <Grid>
-                <ListBox Height="520" HorizontalAlignment="Left" Margin="8,8,0,0" Name="lb_noteList" VerticalAlignment="Top" Width="174" BorderBrush="White" FontSize="14" SelectionChanged="lb_noteList_SelectionChanged" />
+                <ListBox Height="520" HorizontalAlignment="Left" Margin="8,8,0,0" Name="lb_noteList" VerticalAlignment="Top" Width="174" BorderBrush="White" FontSize="14" SelectionChanged="lb_noteList_SelectionChanged" LostFocus="lb_noteList_LostFocus" />
             </Grid>
         </GroupBox>
         <GroupBox Height="557" HorizontalAlignment="Left" Margin="424,62,0,0" Name="groupBox3" VerticalAlignment="Top" Width="757">

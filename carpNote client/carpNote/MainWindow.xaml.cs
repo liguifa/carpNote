@@ -80,7 +80,8 @@ namespace carpNote
         private void but_syn_Click(object sender, RoutedEventArgs e)
         {
             ConfigXML configXML = new ConfigXML();
-            configXML.getUserID();
+            UserName=configXML.getUserID();
+            UserPW=configXML.getUserPW();
         }
 
         private void bt_createBook_Click(object sender, RoutedEventArgs e)
@@ -150,17 +151,57 @@ namespace carpNote
 
         }
 
+        /// <summary>
+        /// 笔记本的逻辑存在一定问题
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+
         private void lb_noteList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            fileOP op = new fileOP();
-            ListBoxItem noteUse = new ListBoxItem();
-            noteUse = (ListBoxItem)lb_noteList.SelectedItems[0];
-            string noteUseFileName = noteUse.Content.ToString();//笔记名称
             TreeViewItem selectItem = (TreeViewItem)tv_book.SelectedItem;
             string selectItemName = selectItem.Header.ToString();//笔记本名称
+
+            fileOP op = new fileOP();
+
+            if (firstEnterBook != true && noteUse.Content.ToString() != null)
+            {
+                string lastUseNote = noteUse.Content.ToString();
+                op.writeToNote(selectItemName, lastUseNote,htmlEditor.ContentHtml.ToString());
+            }
+            
+            if (focusLost==false)
+            {
+                firstEnterBook = true;
+                focusLost = true;
+
+               // return;
+            }
+
+            if (lb_noteList.SelectedIndex==-1)
+            {
+                return;
+
+            }
+
+            noteUse = (ListBoxItem)lb_noteList.SelectedItems[0];
+            string noteUseFileName = noteUse.Content.ToString();//笔记名称
+
             string fileContent = op.readToNote(selectItemName, noteUseFileName);
             htmlEditor.ContentHtml = fileContent;//为编辑框添加内容
 
+            firstEnterBook = false;
+
+        }
+
+        public ListBoxItem noteUse = new ListBoxItem();
+        public bool firstEnterBook = true;//处理第一次进入笔记本的异常
+        public bool focusLost = true;//处理第一次笔记本的切换异常
+
+
+        private void lb_noteList_LostFocus(object sender, RoutedEventArgs e)
+        {
+            focusLost = false;
         }
     }
 }
