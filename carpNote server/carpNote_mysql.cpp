@@ -13,7 +13,7 @@
 //判断账户是否存在
 bool carpNoteSQL::checkUser(string UserName,string UserPW)
 {
-	string sql="select UserPW from CarpNote.tb_user where UserName=='"+UserName+"'";
+	string sql="select UserPW from CarpNote.tb_user where UserName='"+UserName+"'";
 	const char *charSQL=sql.c_str();
 	if(SQLCon->SelectQuery(charSQL))
 	{
@@ -36,7 +36,7 @@ bool carpNoteSQL::addUser(string UserName,string UserPW)
 //修改账户名
 bool carpNoteSQL::modifyUserName(string UserName,string newUserName)
 {
-	string sql="update CarpNote.tb_user set UserName='"+newUserName+"' where UserName=='"+UserName+"'";
+	string sql="update CarpNote.tb_user set UserName='"+newUserName+"' where UserName='"+UserName+"'";
 	const char* charSQL=sql.c_str();
 	SQLCon->ModifyQuery(charSQL);
 
@@ -46,7 +46,7 @@ bool carpNoteSQL::modifyUserName(string UserName,string newUserName)
 //修改用户名
 bool carpNoteSQL::modifyUserPW(string UserName,string newUserPW)
 {
-	string sql="update CarpNote.tb_user set UserPW='"+newUserPW+"' where UserName=='"+UserName+"'";
+	string sql="update CarpNote.tb_user set UserPW='"+newUserPW+"' where UserName='"+UserName+"'";
 	const char* charSQL=sql.c_str();
 	SQLCon->ModifyQuery(charSQL);
 
@@ -56,7 +56,7 @@ bool carpNoteSQL::modifyUserPW(string UserName,string newUserPW)
 //得到用户id
 string carpNoteSQL::getUserIDByUserName(string UserName)
 {
-	string sql="select UserID from CarpNote.tb_user where UserName=='"+UserName+"'";
+	string sql="select UserID from CarpNote.tb_user where UserName='"+UserName+"'";
 	const char* charSQL=sql.c_str();
 	string str;
 	SQLCon->SelectQuery(charSQL);
@@ -83,7 +83,7 @@ bool carpNoteSQL::addBook(string UserName,string bookName)
 bool carpNoteSQL::modifyBookName(string UserName, string BookName,string newBookName)
 {
 	string UserID=getUserIDByUserName(UserName);
-	string sql="update CarpNote.tb_book set bookName='"+newBookName+"' where UserID=="+UserID+"bookName=='"+BookName+"'";
+	string sql="update CarpNote.tb_book set bookName='"+newBookName+"' where UserID="+UserID+"&&bookName='"+BookName+"'";
 	const char* charSQL=sql.c_str();
 	SQLCon->ModifyQuery(charSQL);
 
@@ -94,7 +94,7 @@ bool carpNoteSQL::modifyBookName(string UserName, string BookName,string newBook
 string carpNoteSQL::getBookIDByBookName(string UserName,string BookName)
 {
 	string UserID=getUserIDByUserName(UserName);
-	string sql="select bookID from CarpNote.tb_user where UserID=="+UserID+"&&bookName=='"+BookName+"'";
+	string sql="select bookID from CarpNote.tb_user where UserID="+UserID+"&&bookName='"+BookName+"'";
 	const char* charSQL=sql.c_str();
 	string str;
 	SQLCon->SelectQuery(charSQL);
@@ -124,7 +124,7 @@ bool  carpNoteSQL::modifyNoteName(string UserName,string BookName,string NoteNam
 {
 	string UserID=getUserIDByUserName(UserName);
 	string BookID=getBookIDByBookName(UserName,BookName);
-	string sql="update CarpNote.tb_note set noteName='"+newNoteName+"' where UserID=="+UserID+"&&bookID=="+BookID;
+	string sql="update CarpNote.tb_note set noteName='"+newNoteName+"' where UserID="+UserID+"&&bookID="+BookID;
 	const char* charSQL=sql.c_str();
 	SQLCon->ModifyQuery(charSQL);
 
@@ -135,7 +135,7 @@ bool  carpNoteSQL::modifyNoteName(string UserName,string BookName,string NoteNam
 vector<string> carpNoteSQL::getUserBook(string UserName)
 {
 	string UserID=getUserIDByUserName(UserName);
-	string sql="select bookName from CarpNote.tb_book where UserID=="+UserID;
+	string sql="select bookName from CarpNote.tb_book where UserID="+UserID;
 	const char* charSQL=sql.c_str();
     int i=0;
 	vector<string> str;
@@ -153,7 +153,7 @@ vector<string> carpNoteSQL::getBookNoteName(string UserName,string BookName)
 {
 	string UserID=getUserIDByUserName(UserName);
 	string BookID=getBookIDByBookName(UserName,BookName);
-	string sql="select noteName from CarpNote.tb_note where UserID=="+UserID+"&& bookID="+BookID;
+	string sql="select noteName from CarpNote.tb_note where UserID="+UserID+"&& bookID="+BookID;
 	const char* charSQL=sql.c_str();
 	vector<string> str;
     int i=0;
