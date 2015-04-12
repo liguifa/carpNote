@@ -79,9 +79,8 @@ namespace carpNote
 
         private void but_syn_Click(object sender, RoutedEventArgs e)
         {
-            ConfigXML configXML = new ConfigXML();
-            UserName=configXML.getUserID();
-            UserPW=configXML.getUserPW();
+
+
         }
 
         private void bt_createBook_Click(object sender, RoutedEventArgs e)

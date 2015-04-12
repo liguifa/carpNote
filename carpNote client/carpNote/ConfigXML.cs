@@ -16,6 +16,7 @@ namespace carpNote
             XmlDataDocument configXMLDocu = new XmlDataDocument();
             configXMLDocu.Load("./config.xml");
             root = configXMLDocu.DocumentElement;
+            
         }
 
         //得到用户账号
@@ -82,5 +83,68 @@ namespace carpNote
             return true;
         }
 
+        public bool addBook(string bookName)
+        {
+            XmlNode UserBook = root.SelectSingleNode("UserBook");
+            //XmlElement newBook = new XmlElement("book",bookName,new Attributes(""));
+            XmlDocument doc = new XmlDocument();
+            //XmlAttribute attr = doc.CreateAttribute("updataStat");
+            XmlElement newBook = doc.CreateElement("book");
+            newBook.InnerText = bookName;
+            newBook.SetAttribute("updataStat", "false");
+            UserBook.AppendChild(newBook);
+
+            
+            return true;
+        }
+
+        //暂时不实现为垃圾回收做准备
+        public bool delBook(string bookName)
+        {
+
+            return true;
+        }
+
+        public bool addNote(string bookName, string noteName)
+        {
+            XmlNode UserBook = root.SelectSingleNode("UserBook");
+            XmlNode book = UserBook.SelectSingleNode(bookName);
+            XmlDocument doc = new XmlDocument();
+            XmlElement newNote = doc.CreateElement("note");
+            newNote.InnerText = noteName;
+            newNote.SetAttribute("updataStat", "false");
+            book.AppendChild(newNote);
+            
+            return true;
+        }
+
+        //
+        //暂时不实现，为以后垃圾回收做准备
+        public bool delNote(string bookName, string noteName)
+        {
+
+            return true;
+        }
+
+        //标记属性来表示笔记是否已经同步
+        public bool updataNote(string bookName, string  noteName,string updataStat)
+        {
+            XmlNode UserBook = root.SelectSingleNode("UserBook");
+            XmlNode book = UserBook.SelectSingleNode(bookName);
+            XmlNode note = book.SelectSingleNode(noteName);
+            note.Attributes[0].Value = updataStat;
+
+            return true;
+        }
+
+        //标记属性来表示笔记本是否已经同步
+        public bool updataBook(string bookName,string updataStat)
+        {
+            XmlNode UserBook = root.SelectSingleNode("UserBook");
+            XmlNode book = UserBook.SelectSingleNode(bookName);
+            book.Attributes[0].Value = updataStat;
+
+            return true;
+        }
     }
 }
