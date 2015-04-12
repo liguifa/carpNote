@@ -13,6 +13,7 @@
 #include <time.h>
 #include <sys/epoll.h>
 #include <pthread.h>
+#include <vector>
 #include "carpNote_mysql.h"
 
 using namespace std;
@@ -23,18 +24,10 @@ using namespace std;
 //#define FILEPATH "/tmp/images/"
 
 
-struct opStr 
+struct fdSet
 {
-	char UserID[8];
-	char UserPW[8];
-	char op[4];
-};
-
-struct clientFD
-{
-	struct opStr *opMsg;
-	int epfd;
-	int fd;
+    int epfd;
+    int fd;
 };
 // typedef struct CMsgReq
 // {
@@ -102,6 +95,64 @@ void sock_epoll_delete (int efd, int sockfd)
 	epoll_ctl(efd,EPOLL_CTL_DEL,sockfd,NULL);
 }
 
+string getSomeCharByCharCom(char* ch)
+{
+    //string str;
+    char strch[4];
+    int start=16;
+    int end=19;
+    for(int i=0;start<=end;start++,i++)
+    {
+       strch[i]=ch[start];
+    }
+    string str=strch;
+    return str;
+}
+
+string getSomeCharByCharName(char* ch)
+{
+    //string str;
+    char strch[8];
+    int start=0;
+    int end=7;
+    for(int i=0;start<=end;start++,i++)
+    {
+       strch[i]=ch[start];
+    }
+    string str=strch;
+    return str;
+}
+
+string getSomeCharByCharPW(char* ch)
+{
+    //string str;
+    char strch[8];
+    int start=8;
+    int end=15;
+    for(int i=0;start<=end;start++,i++)
+    {
+       strch[i]=ch[start];
+    }
+    string str=strch;
+    return str;
+}
+
+vector<string> getDirNameList(char * ch,int n)
+{
+    vector<string> strV;
+    //char chStr[]="0";
+    string str;
+    for(int i=0,j=0;j<n;i++,j++)
+    {
+        if(ch[i]=='|')
+        {
+            i=0;
+            strV.push_back(str);
+        }
+       str+=ch[i];
+    }
+    return strV;
+}
 // void map_insert(unsigned int fd,unsigned filefd)
 // {
 // 	mapsockfile[fd] = filefd;
@@ -152,14 +203,23 @@ void sock_epoll_delete (int efd, int sockfd)
 //client请求处理线程
 void *thread_OP_Func(void* arg)
 {
-	clientFD *Client=(clientFD *)arg;
+	fdSet *fdset=(fdSet *)arg;
 	//验证账户合法性
-	string UserName=Client->opMsg->UserID;
-	string UserPW=Client->opMsg->UserPW;
-    string comStr=Client->opMsg->op;
+	//string UserName=Client->opMsg->UserID;
+	//string UserPW=Client->opMsg->UserPW;
+    //string comStr=Client->opMsg->op;
 
     //string str11="qqweeeqeq";
     //cout<<"1111111111111111"<<endl;
+    char msg[20]="0";
+    int len=0;
+
+    len=recv(fdset->fd,msg,20,0);
+
+    string comStr=getSomeCharByCharCom(msg);
+    string UserName=getSomeCharByCharName(msg);
+    string UserPW=getSomeCharByCharPW(msg);
+
     if(comStr=="chek")
     {
        /// cout<<"222222222222"<<endl;
@@ -168,17 +228,18 @@ void *thread_OP_Func(void* arg)
 	if (userStat)
 	{
 		char *ch="ok";
-		int wlen  = write(Client->fd,ch,sizeof(ch));
+		int wlen  = write(fdset->fd,ch,sizeof(ch));
 
-		sock_epoll_delete(Client->epfd,Client->fd);
+		sock_epoll_delete(fdset->epfd,fdset->fd);
 		//return;
 	} 
 	else
 	{
 		char *ch="no";
-		int wlen  = write(Client->fd,ch,sizeof(ch));
+		int wlen  = write(fdset->fd,ch,sizeof(ch));
 
-		sock_epoll_delete(Client->epfd,Client->fd);
+		//char *ch="no";
+		sock_epoll_delete(fdset->epfd,fdset->fd);
 		//return;
 	}
     }
@@ -189,17 +250,26 @@ void *thread_OP_Func(void* arg)
         if(comStat)
         {
             char *ch="ok";
-            write(Client->fd,ch,sizeof(ch));
+            write(fdset->fd,ch,sizeof(ch));
 
-            sock_epoll_delete(Client->epfd,Client->fd);
+            sock_epoll_delete(fdset->epfd,fdset->fd);
         }
         else
         {
             char *ch="no";
-            write(Client->fd,ch,sizeof(ch));
+            write(fdset->fd,ch,sizeof(ch));
 
-            sock_epoll_delete(Client->epfd,Client->fd);
+            sock_epoll_delete(fdset->epfd,fdset->fd);
         }
+    }
+    else if(comStr=="sybk")
+    {
+        char dirName[]="0";
+        
+    }
+    else if(comStr=="synt")
+    {
+
     }
 
 
@@ -216,29 +286,34 @@ void *thread_OP_Func(void* arg)
 void do_recv_msg(int epoll_fd,int fd)
 {
 	//操作指令
-	opStr *clientOPStr;
-	clientFD client;
-	char msgHead[20] = {0};
-	int len;
+	//opStr *clientOPStr;
+	//clientFD client;
+	//char msgHead[20] = {0};
+	//int len;
 	pthread_t tid;
+    fdSet fdset;
+    int i=epoll_fd;
+    cout<<i<<endl;
+    fdset.epfd=epoll_fd;
+    fdset.fd=fd;
 
-	len=recv(fd,msgHead,20,0);
+	//len=recv(fd,msgHead,20,0);
 	//错误处理
-	if (len<=0)
-	{
-	}
+	//if (len<=0)
+	//{
+	//}
 
-	clientOPStr=(opStr *)msgHead;
-	client.opMsg=clientOPStr;
-	client.epfd=epoll_fd;
-	client.fd=fd;
+	//clientOPStr=(opStr *)msgHead;
+	//client.opMsg=clientOPStr;
+	//client.epfd=epoll_fd;
+	//client.fd=fd;
 
 	//
 	//账户与密码核对留到指令里在做
 	//
 
 	//根据指令进行操作
-	pthread_create(&tid,NULL,thread_OP_Func,(void *)&client);
+	pthread_create(&tid,NULL,thread_OP_Func,(void *)&fdset);
 
 //处理字节序的 暂时不处理
 //
