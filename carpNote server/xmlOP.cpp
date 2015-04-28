@@ -13,13 +13,18 @@ using namespace std;
 xmlOP::xmlOP()
 {
    carpNoteRootDir="/home/CarpNote";
+    carpNoteBookEleName="NoteBook";
+
 }
 
 bool xmlOP::addNoteBook(string UserName,string BookName)
 {
     TiXmlDocument doc=openUserXml(UserName);
     //TiXmlElement *newBook=new TiXmlElement(BookName);
-   if( doc.LinkEndChild(new TiXmlElement(BookName.c_str()))==NULL)
+    TiXmlElement *rootEle=doc.RootElement();
+    TiXmlElement *bookEle=rootEle->NextSiblingElement(carpNoteBookEleName.c_str());
+
+   if( bookEle->LinkEndChild(new TiXmlElement(BookName.c_str()))==NULL)
    {
        return false;
    }
@@ -28,6 +33,15 @@ bool xmlOP::addNoteBook(string UserName,string BookName)
 
 bool xmlOP::addNote(string UserName,string BookName,string NoteName)
 {
+    TiXmlDocument doc=openUserXml(UserName);
+    TiXmlElement *rootEle=doc.RootElement();
+    TiXmlElement *bookEle=rootEle->NextSiblingElement(carpNoteBookEleName.c_str());
+    TiXmlElement *noteEle=bookEle->NextSiblingElement(BookName.c_str());
+
+    if(noteEle->LinkEndChild(new TiXmlElement(NoteName.c_str()))==NULL)
+    {
+        return false;
+    }
 
     return true;
 }
@@ -35,11 +49,30 @@ bool xmlOP::addNote(string UserName,string BookName,string NoteName)
 bool xmlOP::delNoteBook(string UserName,string BookName)
 {
     
+    TiXmlDocument doc=openUserXml(UserName);
+    //TiXmlElement *newBook=new TiXmlElement(BookName);
+    TiXmlElement *rootEle=doc.RootElement();
+    TiXmlElement *bookEle=rootEle->NextSiblingElement(carpNoteBookEleName.c_str());
+    //const char *chBookName=BookName.c_str();
+    if(bookEle->RemoveChild(new TiXmlElement(BookName.c_str()))==false)
+    {
+        return false;
+    }
     return true;
 }
 
 bool xmlOP::delNote(string UserName,string BookName,string NoteName)
 {
+
+    TiXmlDocument doc=openUserXml(UserName);
+    TiXmlElement *rootEle=doc.RootElement();
+    TiXmlElement *bookEle=rootEle->NextSiblingElement(carpNoteBookEleName.c_str());
+    TiXmlElement *noteEle=bookEle->NextSiblingElement(BookName.c_str());
+
+    if(noteEle->RemoveChild(new TiXmlElement(NoteName.c_str()))==false)
+    {
+        return false;
+    }
 
     return true;
 }

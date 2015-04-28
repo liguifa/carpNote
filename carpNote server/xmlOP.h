@@ -27,6 +27,7 @@ public:
 
 private:
     string carpNoteRootDir;
+    string carpNoteBookEleName;
     TiXmlDocument openUserXml(string UserName);
 
 
