@@ -14,11 +14,15 @@
 #include <sys/epoll.h>
 #include <pthread.h>
 #include <vector>
+#include <algorithm>
+#include <string>
 #include "carpNote_mysql.h"
+#include "fileOP.h"
+
 
 using namespace std;
 
-#define   IP   "192.168.136.132"
+#define   IP   "115.28.164.8"
 #define   PORT  9050
 #define   MAXCONNECT 1024
 //#define FILEPATH "/tmp/images/"
@@ -50,7 +54,9 @@ void init_addr(struct sockaddr_in *paddr)
 	bzero(paddr,sizeof(struct sockaddr_in));
 	paddr->sin_family = AF_INET;
 	paddr->sin_port   = htons(PORT);
+//    paddr->sin_port=PORT;
 	paddr->sin_addr.s_addr = inet_addr(IP);
+   // paddr->sin_addr.s_addr=IP;
 	return;
 }
 
@@ -153,6 +159,27 @@ vector<string> getDirNameList(char * ch,int n)
     }
     return strV;
 }
+
+bool sendNoteToClient(string UserName,string BookName,string noteName,int fd)
+{
+    fileOP *fileop=new fileOP();
+    char *fileStr;
+    fileStr=fileop->readForNoteFile(UserName,BookName,noteName);
+    write(fd,fileStr,sizeof(fileStr));
+
+    return true;
+}
+
+bool recvNoteFromClient(string UserName,string BookName,string noteName,int fd)
+{
+    fileOP *fileop=new fileOP();
+    char fileStr[]="0";
+    int len=read(fd,fileStr,2000);
+    fileop->writeToNoteFile(UserName, BookName,noteName,fileStr);
+
+    return true;
+}
+
 // void map_insert(unsigned int fd,unsigned filefd)
 // {
 // 	mapsockfile[fd] = filefd;
@@ -227,19 +254,21 @@ void *thread_OP_Func(void* arg)
 	bool userStat=userQuery->checkUser(UserName,UserPW);
 	if (userStat)
 	{
-		char *ch="ok";
-		int wlen  = write(fdset->fd,ch,sizeof(ch));
+		char ch[]="ok";
+		int wlen  = send(fdset->fd,ch,strlen(ch),0);
 
-		sock_epoll_delete(fdset->epfd,fdset->fd);
+		//int wlen  = write(fdset->fd,ch,strlen(ch));
+		//sock_epoll_delete(fdset->epfd,fdset->fd);
 		//return;
 	} 
 	else
 	{
-		char *ch="no";
-		int wlen  = write(fdset->fd,ch,sizeof(ch));
+		char ch[]="no";
+		int wlen  = send(fdset->fd,ch,strlen(ch),0);
 
+		//int wlen  = write(fdset->fd,ch,strlen(ch));
 		//char *ch="no";
-		sock_epoll_delete(fdset->epfd,fdset->fd);
+		//sock_epoll_delete(fdset->epfd,fdset->fd);
 		//return;
 	}
     }
@@ -249,26 +278,92 @@ void *thread_OP_Func(void* arg)
         bool comStat=userQuery->addUser(UserName,UserPW);
         if(comStat)
         {
-            char *ch="ok";
-            write(fdset->fd,ch,sizeof(ch));
+            char ch[]="ok";
+            send(fdset->fd,ch,sizeof(ch),0);
 
-            sock_epoll_delete(fdset->epfd,fdset->fd);
+          //  sock_epoll_delete(fdset->epfd,fdset->fd);
         }
         else
         {
-            char *ch="no";
-            write(fdset->fd,ch,sizeof(ch));
+            char ch[]="no";
+            send(fdset->fd,ch,sizeof(ch),0);
 
-            sock_epoll_delete(fdset->epfd,fdset->fd);
+            //sock_epoll_delete(fdset->epfd,fdset->fd);
         }
     }
     else if(comStr=="sybk")
     {
         char dirName[]="0";
+        int dirLen=0;
+        carpNoteSQL *userQuery=new carpNoteSQL();
+        dirLen=recv(fdset->fd,dirName,2000,0);
+        vector<string> cdirStr=getDirNameList(dirName,dirLen);
+        vector<string> sdirStr=userQuery->getUserBook(UserName);
+        //sort(cdirStr.begin(),cdirStr.end());
+        vector<string> clientLack,serverLack;
+        for(vector<string>::iterator ite=cdirStr.begin();ite<=cdirStr.end();ite++)
+        {
+
+            vector<string>::iterator result=find(sdirStr.begin(),sdirStr.end(),*ite);
+            if(result!=sdirStr.end())
+            {
+                serverLack.push_back(*ite);
+            }
+        }
+        if(serverLack.size()!=0)
+        {
+            fileOP * fileop=new fileOP();
+
+            for(vector<string>::iterator ite=serverLack.begin();ite<=serverLack.end();ite++)
+            {
+                userQuery->addBook(UserName,*ite);
+                fileop->setBookDir(UserName,*ite);
+                
+
+            }
+        }
+
+        for(vector<string>::iterator ite=sdirStr.begin();ite<=sdirStr.end();ite++)
+        {
+            vector<string>::iterator result=find(cdirStr.begin(),cdirStr.end(),*ite);
+                //clientLack.push_back(*ite);
+            if(result!=cdirStr.end())
+            {
+                clientLack.push_back(*ite);
+            }
+        }
+
+        if(clientLack.size()!=0)
+        {
+            string sendstr;
+            for(vector<string>::iterator ite=clientLack.begin();ite<=clientLack.end();ite++)
+            {
+                sendstr+=*ite;
+            }
+            const char *clientLockBuffer=sendstr.c_str();
+            write(fdset->fd,clientLockBuffer,sizeof(clientLockBuffer));
+        }
+        else
+        {
+            char clientLockBuffer[]="NONEED";
+            write(fdset->fd,clientLockBuffer,sizeof(clientLockBuffer));
+        }
         
     }
     else if(comStr=="synt")
     {
+        char *noteBookName;
+        int strLen=read(fdset->fd,noteBookName,2000);
+        vector<string> str=getDirNameList(noteBookName,strLen);
+        string bookName=str[0];
+        for(int i=1;i<=str.size();i++)
+        {
+            recvNoteFromClient(UserName,bookName,str[i],fdset->fd);
+        }
+    }
+    else if(comStr=="sypt")
+    {
+
 
     }
 
@@ -302,6 +397,9 @@ void do_recv_msg(int epoll_fd,int fd)
 	//if (len<=0)
 	//{
 	//}
+    
+    //一条指令完成,剩下交给线程处理
+    sock_epoll_delete(epoll_fd,fd);
 
 	//clientOPStr=(opStr *)msgHead;
 	//client.opMsg=clientOPStr;
@@ -460,16 +558,24 @@ int main(int argc,char *argv[])
 					}
 				}
 			}
-			else
+			else if(cur_fd&EPOLLIN)
 			{
 				printf("client send message to server\n");
 				if(!(events[i].events & EPOLLIN))
 				{   
 					printf("continue\n");
-					continue;
+	        		continue;
 				}
 				do_recv_msg(epoll_fd,cur_fd);
-			}			
+			}
+            else if(cur_fd&EPOLLOUT)
+            {
+                
+            }
+            else
+            {
+
+            }
 		}
 	}
 }

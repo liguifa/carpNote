@@ -31,7 +31,7 @@ private:
     TiXmlDocument openUserXml(string UserName);
 
 
-}
+};
 
 
 
