@@ -242,6 +242,15 @@ void *thread_OP_Func(void* arg)
     int len=0;
 
     len=recv(fdset->fd,msg,20,0);
+    //
+    //处理不合规则的字符串,退出线程,结束相关所有操作 
+    //
+    if(len!=20){
+ //       pthread_exit(NULL);
+        //return ;
+        close(fdset->fd);
+        pthread_exit(NULL);
+    }
 
     string comStr=getSomeCharByCharCom(msg);
     string UserName=getSomeCharByCharName(msg);
@@ -270,7 +279,7 @@ void *thread_OP_Func(void* arg)
 		//char *ch="no";
 		//sock_epoll_delete(fdset->epfd,fdset->fd);
 		//return;
-	}
+    }
     }
     else if(comStr=="regi")
     {
@@ -366,11 +375,25 @@ void *thread_OP_Func(void* arg)
 
 
     }
+    //更新某个笔记的某些语句
+    //NoteBookName+NoteName+修改日期(精确到ms)+修改之后的内容
+    //之后根据日期修改note
+    else if(comStr=="sdnt")
+    {
+        char *modifyNoteStr;
+        int strLen=read(fdset->fd,modifyNoteStr,2000);
+        //
+        //得到NoteBookName NoteName modifyData modifyStr
+        //
+
+        
+    }
 
 
 
 
 
+    close(fdset->fd);
 	//执行相关操作
 
 	pthread_exit(NULL);

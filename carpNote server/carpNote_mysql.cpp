@@ -15,12 +15,16 @@ bool carpNoteSQL::checkUser(string UserName,string UserPW)
 {
 	string sql="select UserPW from CarpNote.tb_user where UserName='"+UserName+"'";
 	const char *charSQL=sql.c_str();
+    //
+    //此处有错误,SelectQuery成功返回0，以后修改逻辑
+    //
 	if(SQLCon->SelectQuery(charSQL))
 	{
-		return true;
+        cout<<"UserName or UserPW check failed!"<<endl;
+		return false;
 	}
 
-	return false;
+	return true;
 }
 
 //添加账户
